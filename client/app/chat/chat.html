@@ -1,0 +1,13 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+
+<div class="col-md-12">
+This is the chat view.
+
+<p class="lead">Start chat right in a browser</p>
+ <p class="lead">Your id is <strong>{{$scope.data.message}}</strong></p>
+
+  <button class="btn btn-info" ng-click="peerconnect()">Say hi</button>
+
+  <div ng-bind="$scope.data.text"></div>
+</div>
