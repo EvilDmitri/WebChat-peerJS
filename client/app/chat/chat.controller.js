@@ -1,7 +1,32 @@
 'use strict';
 
 angular.module('webChatApp')
-  .controller('ChatCtrl', function ($scope, $location,  Auth) {
+  .controller('ChatCtrl', function ($scope, $location, $http, socket, Auth) {
+
+    $http.get('/api/peers').success(function(Peers) {
+      $scope.peers = Peers;
+      socket.syncUpdates('peer', $scope.peers);
+    });
+
+
+    $scope.addPeer = function() {
+      if($scope.newPeer === '') {
+        return;
+      }
+      $http.post('/api/peers', { name: $scope.newPeer });
+      $scope.newPeer = '';
+    };
+
+    //$scope.deleteThing = function(thing) {
+    //  $http.delete('/api/things/' + thing._id);
+    //};
+
+    $scope.$on('$destroy', function () {
+      socket.unsyncUpdates('peer');
+    });
+
+
+
     $scope.isLoggedIn = Auth.isLoggedIn;
     if (!$scope.isLoggedIn()){
       $location.path('/login');
@@ -11,12 +36,9 @@ angular.module('webChatApp')
     var user = Auth.getCurrentUser();
     $scope.user = user;
 
-    $scope.data = {'message': $scope.user._id};
+    //console.log($scope.user);
 
-
-    console.log($scope.user);
-
-    $scope.data.text = 'empty';
+    $scope.data = {text: 'empty'};
     var peer = new Peer(user._id, {key: 'ewlwq5erdvxwdn29'});
 
     peer.on('connection', function(conn) {

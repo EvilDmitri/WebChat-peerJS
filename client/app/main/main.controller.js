@@ -5,11 +5,12 @@ angular.module('webChatApp')
 
 
 
+
     $scope.modal=Modal.confirm.askToLogin(function(message) { // callback when modal is confirmed
       console.log(message);
 
       if(message === 'login') {
-        $location.path("/login"); //will redirect to login page, make sure your controller is using $location
+        $location.path("/login"); //will redirect to login page
       }
       if(message === 'signup') {
         $location.path("/signup");
