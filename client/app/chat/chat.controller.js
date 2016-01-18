@@ -3,10 +3,29 @@
 angular.module('webChatApp')
   .controller('ChatCtrl', function ($scope, $location, $http, socket, Auth) {
 
-    $http.get('/api/peers').success(function(Peers) {
-      $scope.peers = Peers;
-      socket.syncUpdates('peer', $scope.peers);
+
+    socket.socket.on('message', function(message) {
+
+      $scope.peers = message.data;
+      console.log($scope.peers);
+      //var newElement = $('<div></div>').text(message.text);
+      //$('#messages').append(newElement);
     });
+
+    $scope.sendId = function(name, id) {
+      var message = {
+        name: name,
+        id: id
+      };
+      //console.log(message);
+      socket.socket.emit('connected', message);
+    };
+
+
+    //$http.get('/api/peers').success(function(Peers) {
+    //  $scope.peers = Peers;
+    //  socket.syncUpdates('peer', $scope.peers);
+    //});
 
 
     //$scope.addPeer = function() {
@@ -22,9 +41,17 @@ angular.module('webChatApp')
     //};
 
     $scope.$on('$destroy', function () {
+      $scope.sendId = function(name, id) {
+      var message = {
+        name: name,
+        id: id
+      };
+      //console.log(message);
+      socket.socket.emit('disconnected', message);
+    };
       //  Add current user to peers
-      $http.delete('/api/peers', { id: $scope.session.peerId});
-      socket.unsyncUpdates('peer');
+      //$http.delete('/api/peers', { id: $scope.session.peerId});
+      //socket.unsyncUpdates('peer');
     });
 
 
@@ -40,21 +67,21 @@ angular.module('webChatApp')
 
     $scope.init = function () {
       //  Add current user to peers
-      $http.post('/api/peers', { id: user._id, name: user.name });
-      $http({
-        method: 'POST',
-        url: '/api/peers'
-      }).
-        then(function(response) {
-          $scope.status = response.status;
-          $scope.session = {
-            peerId: response.data._id
-          };
-
-        }, function(response) {
-          $scope.data = response.data || "Request failed";
-          $scope.status = response.status;
-      });
+      //$http.post('/api/peers', { id: user._id, name: user.name });
+      //$http({
+      //  method: 'POST',
+      //  url: '/api/peers'
+      //}).
+      //  then(function(response) {
+      //    $scope.status = response.status;
+      //    $scope.session = {
+      //      peerId: response.data._id
+      //    };
+      //
+      //  }, function(response) {
+      //    $scope.data = response.data || "Request failed";
+      //    $scope.status = response.status;
+      //});
 
     };
 

@@ -7,14 +7,16 @@ This is the chat view.
   <div>
     <p class="lead">Connected peers:</p>
     <div ng-repeat="peer in peers">
-        <div ng-href="{{peer._id}}">{{peer.name}}</div>
+        <div ng-repeat="(key, val) in peer track by $index">
+            <div ng-href="{{key}}">{{value}}</div>
+        </div>
     </div>
   </div>
 
 <!--<p class="lead">Start chat right in a browser</p>-->
  <p class="lead">Your id is <strong>{{user._id}}</strong></p>
 
-  <button class="btn btn-info" ng-click="peerconnect()">Say hi</button>
+  <button class="btn btn-info" ng-click="sendId(user.name, user._id)">Say hi</button>
 
   <div ng-bind="$scope.data.text"></div>
 </div>
